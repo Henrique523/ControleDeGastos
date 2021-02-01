@@ -41,6 +41,12 @@ export class CreateCosts1612221048429 implements MigrationInterface {
             type: 'timestamp',
             default: 'now()',
           },
+          {
+            name: 'deleted_at',
+            type: 'timestamp',
+            isNullable: true,
+            default: null,
+          },
         ],
         foreignKeys: [
           {
