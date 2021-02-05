@@ -1,5 +1,5 @@
-import IUpdateCategoryDTO from '@modules/category/dtos/IUpdateCategoryDTO'
 import Category from '@modules/category/infra/typeorm/entities/Category'
+
 import ICategoryRepository from '../ICategoryRepository'
 
 export default class FakeCategoryRepository implements ICategoryRepository {
@@ -16,28 +16,29 @@ export default class FakeCategoryRepository implements ICategoryRepository {
     return this.categories[id - 1]
   }
 
-  public async updateCategory({ description, id }: IUpdateCategoryDTO): Promise<Category> {
-    const indexCategory = this.categories.findIndex(category => category.id === id)
-
-    const updatedAt = new Date()
-
-    this.categories[indexCategory].description = description
-    this.categories[indexCategory].updated_at = updatedAt
-
-    return this.categories[indexCategory]
-  }
-
   public async findAllCategories(): Promise<Category[]> {
     return this.categories
   }
 
-  public async findSpecificCategory(id: number): Promise<Category> {
+  public async findCategoryById(id: number): Promise<Category> {
     const indexCategory = this.categories.findIndex(category => category.id === id)
     return this.categories[indexCategory]
+  }
+
+  public async findCategoryByDescription(description: string): Promise<Category | undefined> {
+    return this.categories.find(category => category.description === description)
   }
 
   public async deleteCategory(id: number): Promise<void> {
     const indexCategory = this.categories.findIndex(category => category.id === id)
     this.categories[indexCategory].deleted_at = new Date()
+  }
+
+  public async save(category: Category): Promise<Category> {
+    const indexCategory = this.categories.findIndex(categoryBD => categoryBD.id === category.id)
+
+    this.categories.splice(indexCategory, 1, Object.assign({}, category))
+
+    return category
   }
 }

@@ -19,26 +19,14 @@ export default class FakeCostRepository implements ICostRepository {
     return this.costs[id - 1]
   }
 
-  public async updateCost({ category_id, id, date, value, description }: ICreateCostDTO): Promise<Cost> {
-    const indexCost = this.costs.findIndex(cost => cost.id === id)
-
-    this.costs[indexCost].category_id = category_id
-    this.costs[indexCost].date = date
-    this.costs[indexCost].value = value
-    this.costs[indexCost].description = description
-    this.costs[indexCost].updated_at = new Date()
-
-    return this.costs[indexCost]
-  }
-
-  public async deleteCost(id: number): Promise<void> {
-    const indexCost = this.costs.findIndex(cost => cost.id === id)
-
-    this.costs[indexCost].deleted_at = new Date()
-  }
-
   public async findAllCosts(): Promise<Cost[]> {
     return this.costs
+  }
+
+  public async findCostById(id: number): Promise<Cost | undefined> {
+    const cost = this.costs.find(cost => cost.id === id)
+
+    return cost
   }
 
   public async findCostsByCategory(category_id: number): Promise<Cost[]> {
@@ -47,5 +35,15 @@ export default class FakeCostRepository implements ICostRepository {
 
   public async findCostsByDate(date: Date): Promise<Cost[]> {
     return this.costs.filter(cost => cost.date === date)
+  }
+
+  public async deleteCost(id: number): Promise<void> {
+    const indexCost = this.costs.findIndex(cost => cost.id === id)
+
+    this.costs[indexCost].deleted_at = new Date()
+  }
+
+  public async save(cost: Cost): Promise<Cost> {
+    return cost
   }
 }

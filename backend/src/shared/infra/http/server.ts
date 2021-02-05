@@ -1,6 +1,7 @@
 import express from 'express'
 
 import '../typeorm'
+import '@shared/container'
 
 const app = express()
 

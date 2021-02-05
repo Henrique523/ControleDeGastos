@@ -1,9 +1,6 @@
 import { Repository, getRepository } from 'typeorm'
 
-import IUpdateCategoryDTO from '@modules/category/dtos/IUpdateCategoryDTO'
 import ICategoryRepository from '@modules/category/repositories/ICategoryRepository'
-
-import DatabaseError from '@shared/errors/DatabaseError'
 
 import Category from '../entities/Category'
 
@@ -26,33 +23,23 @@ export default class CategoryRepository implements ICategoryRepository {
     return categories
   }
 
-  public async findSpecificCategory(id: number): Promise<Category | undefined> {
+  public async findCategoryById(id: number): Promise<Category | undefined> {
     const category = await this.ormRepository.findOne(id)
 
     return category
   }
 
-  public async updateCategory({ description, id }: IUpdateCategoryDTO): Promise<Category> {
-    const category = await this.ormRepository.findOne(id)
-
-    if (!category) {
-      throw new DatabaseError('Category does not exists in database.')
-    }
-
-    category.description = description
-    await this.save(category)
-
+  public async findCategoryByDescription(description: string): Promise<Category | undefined> {
+    const category = await this.ormRepository.findOne({ where: { description } })
     return category
   }
 
   public async deleteCategory(id: number): Promise<void> {
     const category = await this.ormRepository.findOne(id)
 
-    if (!category) {
-      throw new DatabaseError('Category does not exists in database.')
+    if (category) {
+      await this.ormRepository.softDelete(category)
     }
-
-    await this.ormRepository.softDelete(category)
   }
 
   public async save(category: Category): Promise<Category> {
