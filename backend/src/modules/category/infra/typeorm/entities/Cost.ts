@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
   ManyToOne,
   JoinColumn,
 } from 'typeorm'
@@ -35,4 +36,7 @@ export default class Cost {
 
   @UpdateDateColumn()
   updated_at: Date
+
+  @DeleteDateColumn()
+  deleted_at: Date | null
 }

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm'
 
 @Entity('categories')
 export default class Category {
@@ -13,4 +13,7 @@ export default class Category {
 
   @UpdateDateColumn()
   updated_at: Date
+
+  @DeleteDateColumn()
+  deleted_at: Date | null
 }
