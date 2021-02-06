@@ -12,10 +12,10 @@ describe('CreateNewCategoryService', () => {
   })
 
   it('should be able to create a new category', async () => {
-    const category = await fakeCategoryRepository.createCategory('Categoria1')
+    const category = await createNewCategoryService.execute({ description: 'Category_1' })
 
     expect(category).toHaveProperty('id')
-    expect(category.description).toBe('Categoria1')
+    expect(category.description).toBe('Category_1')
   })
 
   it('should not be able to create a category with an existing description', async () => {

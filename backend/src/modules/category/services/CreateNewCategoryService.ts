@@ -24,7 +24,7 @@ class CreateNewCategoryService {
       throw new AppError('A category with this description already exists.')
     }
 
-    const newCategory = await this.categoriesRepository.createCategory(description)
+    const newCategory = await this.categoriesRepository.create(description)
 
     return newCategory
   }

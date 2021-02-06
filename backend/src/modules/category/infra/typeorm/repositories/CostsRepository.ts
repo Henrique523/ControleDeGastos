@@ -2,7 +2,6 @@ import { Repository, getRepository } from 'typeorm'
 
 import ICostRepository from '@modules/category/repositories/ICostRepository'
 import ICreateCostDTO from '@modules/category/dtos/ICreateCostDTO'
-import DatabaseError from '@shared/errors/DatabaseError'
 
 import Cost from '../entities/Cost'
 
@@ -13,18 +12,18 @@ export default class CostsRepository implements ICostRepository {
     this.ormRepository = getRepository(Cost)
   }
 
-  public async createCost({ category_id, date, description, value }: ICreateCostDTO): Promise<Cost> {
+  public async create({ category_id, date, description, value }: ICreateCostDTO): Promise<Cost> {
     const cost = this.ormRepository.create({ category_id, date, description, value })
     return cost
   }
 
-  public async findAllCosts(): Promise<Cost[]> {
+  public async index(): Promise<Cost[]> {
     const costs = await this.ormRepository.find()
 
     return costs
   }
 
-  public async findCostById(id: number): Promise<Cost | undefined> {
+  public async show(id: number): Promise<Cost | undefined> {
     const cost = this.ormRepository.findOne(id)
 
     return cost
@@ -42,14 +41,12 @@ export default class CostsRepository implements ICostRepository {
     return costs
   }
 
-  public async deleteCost(id: number): Promise<void> {
+  public async delete(id: number): Promise<void> {
     const cost = await this.ormRepository.findOne(id)
 
-    if (!cost) {
-      throw new DatabaseError('Data not found in database.')
+    if (cost) {
+      this.ormRepository.softDelete(cost)
     }
-
-    this.ormRepository.softDelete(cost)
   }
 
   public async save(cost: Cost): Promise<Cost> {

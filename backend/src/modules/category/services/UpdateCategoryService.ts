@@ -19,7 +19,7 @@ class UpdateCategoryService {
   ) {}
 
   public async execute({ id, description }: IRequest): Promise<Category> {
-    const category = await this.categoriesRepository.findCategoryById(id)
+    const category = await this.categoriesRepository.show(id)
 
     if (!category) {
       throw new AppError('This category does not exists on database.')

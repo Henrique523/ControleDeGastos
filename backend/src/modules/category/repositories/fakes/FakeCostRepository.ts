@@ -6,7 +6,7 @@ import ICostRepository from '../ICostRepository'
 export default class FakeCostRepository implements ICostRepository {
   private costs: Cost[] = []
 
-  public async createCost({ description, category_id, date, value }: ICreateCostDTO): Promise<Cost> {
+  public async create({ description, category_id, date, value }: ICreateCostDTO): Promise<Cost> {
     const category = new Category()
 
     const created_at = new Date()
@@ -19,11 +19,11 @@ export default class FakeCostRepository implements ICostRepository {
     return this.costs[id - 1]
   }
 
-  public async findAllCosts(): Promise<Cost[]> {
+  public async index(): Promise<Cost[]> {
     return this.costs
   }
 
-  public async findCostById(id: number): Promise<Cost | undefined> {
+  public async show(id: number): Promise<Cost | undefined> {
     const cost = this.costs.find(cost => cost.id === id)
 
     return cost
@@ -37,7 +37,7 @@ export default class FakeCostRepository implements ICostRepository {
     return this.costs.filter(cost => cost.date === date)
   }
 
-  public async deleteCost(id: number): Promise<void> {
+  public async delete(id: number): Promise<void> {
     const indexCost = this.costs.findIndex(cost => cost.id === id)
 
     this.costs[indexCost].deleted_at = new Date()
