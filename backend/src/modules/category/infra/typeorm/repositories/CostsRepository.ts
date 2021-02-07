@@ -1,9 +1,10 @@
-import { Repository, getRepository } from 'typeorm'
+import { Repository, getRepository, Raw } from 'typeorm'
 
 import ICostRepository from '@modules/category/repositories/ICostRepository'
 import ICreateCostDTO from '@modules/category/dtos/ICreateCostDTO'
 
 import Cost from '../entities/Cost'
+import IFindMonthCostsDTO from '@modules/category/dtos/IFindMonthCostsDTO'
 
 export default class CostsRepository implements ICostRepository {
   private ormRepository: Repository<Cost>
@@ -35,8 +36,14 @@ export default class CostsRepository implements ICostRepository {
     return costs
   }
 
-  public async findCostsByDate(date: Date): Promise<Cost[]> {
-    const costs = await this.ormRepository.find({ where: { date } })
+  public async findMonthCosts({ year, month }: IFindMonthCostsDTO): Promise<Cost[]> {
+    const parsedMonth = String(month).padStart(2, '0')
+
+    const costs = await this.ormRepository.find({
+      where: {
+        date: Raw(dateFieldName => `to_char(${dateFieldName}, 'MM-YYYY') = '${parsedMonth}-${year}'`),
+      },
+    })
 
     return costs
   }

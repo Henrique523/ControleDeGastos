@@ -1,6 +1,10 @@
+import { getMonth, getYear } from 'date-fns'
+
 import Category from '@modules/category/infra/typeorm/entities/Category'
 import ICreateCostDTO from '@modules/category/dtos/ICreateCostDTO'
 import Cost from '@modules/category/infra/typeorm/entities/Cost'
+import IFindMonthCostsDTO from '@modules/category/dtos/IFindMonthCostsDTO'
+
 import ICostRepository from '../ICostRepository'
 
 export default class FakeCostRepository implements ICostRepository {
@@ -20,21 +24,25 @@ export default class FakeCostRepository implements ICostRepository {
   }
 
   public async index(): Promise<Cost[]> {
-    return this.costs
+    return this.costs.filter(cost => cost.deleted_at === null)
   }
 
   public async show(id: number): Promise<Cost | undefined> {
-    const cost = this.costs.find(cost => cost.id === id)
+    const cost = this.costs.find(cost => cost.id === id && cost.deleted_at === null)
 
     return cost
   }
 
   public async findCostsByCategory(category_id: number): Promise<Cost[]> {
-    return this.costs.filter(cost => cost.category_id === category_id)
+    return this.costs.filter(cost => cost.category_id === category_id && cost.deleted_at === null)
   }
 
-  public async findCostsByDate(date: Date): Promise<Cost[]> {
-    return this.costs.filter(cost => cost.date === date)
+  public async findMonthCosts({ month, year }: IFindMonthCostsDTO): Promise<Cost[]> {
+    const costs = this.costs.filter(
+      cost => getMonth(cost.date) + 1 === month && getYear(cost.date) === year && cost.deleted_at === null
+    )
+
+    return costs
   }
 
   public async delete(id: number): Promise<void> {
@@ -44,6 +52,13 @@ export default class FakeCostRepository implements ICostRepository {
   }
 
   public async save(cost: Cost): Promise<Cost> {
+    const updated_at = new Date()
+    cost.updated_at = updated_at
+
+    const indexCost = this.costs.findIndex(costDB => costDB.id === cost.id)
+
+    this.costs.splice(indexCost, 1, cost)
+
     return cost
   }
 }

@@ -1,4 +1,5 @@
 import ICreateCostDTO from '../dtos/ICreateCostDTO'
+import IFindMonthCostsDTO from '../dtos/IFindMonthCostsDTO'
 import Cost from '../infra/typeorm/entities/Cost'
 
 export default interface ICostRepository {
@@ -6,7 +7,7 @@ export default interface ICostRepository {
   index(): Promise<Cost[]>
   show(id: number): Promise<Cost | undefined>
   findCostsByCategory(category_id: number): Promise<Cost[]>
-  findCostsByDate(date: Date): Promise<Cost[]>
+  findMonthCosts(data: IFindMonthCostsDTO): Promise<Cost[]>
   delete(id: number): Promise<void>
   save(cost: Cost): Promise<Cost>
 }
