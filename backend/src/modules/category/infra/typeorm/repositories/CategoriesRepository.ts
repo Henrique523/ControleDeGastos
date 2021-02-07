@@ -11,19 +11,19 @@ export default class CategoryRepository implements ICategoryRepository {
     this.ormRepository = getRepository(Category)
   }
 
-  public async createCategory(description: string): Promise<Category> {
+  public async create(description: string): Promise<Category> {
     const category = this.ormRepository.create({ description })
 
     return category
   }
 
-  public async findAllCategories(): Promise<Category[]> {
+  public async index(): Promise<Category[]> {
     const categories = await this.ormRepository.find()
 
     return categories
   }
 
-  public async findCategoryById(id: number): Promise<Category | undefined> {
+  public async show(id: number): Promise<Category | undefined> {
     const category = await this.ormRepository.findOne(id)
 
     return category
@@ -34,7 +34,7 @@ export default class CategoryRepository implements ICategoryRepository {
     return category
   }
 
-  public async deleteCategory(id: number): Promise<void> {
+  public async delete(id: number): Promise<void> {
     const category = await this.ormRepository.findOne(id)
 
     if (category) {

@@ -1,12 +1,16 @@
+import { getMonth, getYear } from 'date-fns'
+
 import Category from '@modules/category/infra/typeorm/entities/Category'
 import ICreateCostDTO from '@modules/category/dtos/ICreateCostDTO'
 import Cost from '@modules/category/infra/typeorm/entities/Cost'
+import IFindMonthCostsDTO from '@modules/category/dtos/IFindMonthCostsDTO'
+
 import ICostRepository from '../ICostRepository'
 
 export default class FakeCostRepository implements ICostRepository {
   private costs: Cost[] = []
 
-  public async createCost({ description, category_id, date, value }: ICreateCostDTO): Promise<Cost> {
+  public async create({ description, category_id, date, value }: ICreateCostDTO): Promise<Cost> {
     const category = new Category()
 
     const created_at = new Date()
@@ -19,31 +23,42 @@ export default class FakeCostRepository implements ICostRepository {
     return this.costs[id - 1]
   }
 
-  public async findAllCosts(): Promise<Cost[]> {
-    return this.costs
+  public async index(): Promise<Cost[]> {
+    return this.costs.filter(cost => cost.deleted_at === null)
   }
 
-  public async findCostById(id: number): Promise<Cost | undefined> {
-    const cost = this.costs.find(cost => cost.id === id)
+  public async show(id: number): Promise<Cost | undefined> {
+    const cost = this.costs.find(cost => cost.id === id && cost.deleted_at === null)
 
     return cost
   }
 
   public async findCostsByCategory(category_id: number): Promise<Cost[]> {
-    return this.costs.filter(cost => cost.category_id === category_id)
+    return this.costs.filter(cost => cost.category_id === category_id && cost.deleted_at === null)
   }
 
-  public async findCostsByDate(date: Date): Promise<Cost[]> {
-    return this.costs.filter(cost => cost.date === date)
+  public async findMonthCosts({ month, year }: IFindMonthCostsDTO): Promise<Cost[]> {
+    const costs = this.costs.filter(
+      cost => getMonth(cost.date) + 1 === month && getYear(cost.date) === year && cost.deleted_at === null
+    )
+
+    return costs
   }
 
-  public async deleteCost(id: number): Promise<void> {
+  public async delete(id: number): Promise<void> {
     const indexCost = this.costs.findIndex(cost => cost.id === id)
 
     this.costs[indexCost].deleted_at = new Date()
   }
 
   public async save(cost: Cost): Promise<Cost> {
+    const updated_at = new Date()
+    cost.updated_at = updated_at
+
+    const indexCost = this.costs.findIndex(costDB => costDB.id === cost.id)
+
+    this.costs.splice(indexCost, 1, cost)
+
     return cost
   }
 }
