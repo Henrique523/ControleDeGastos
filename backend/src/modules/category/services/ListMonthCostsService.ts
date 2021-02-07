@@ -31,7 +31,7 @@ class ListMonthCostsService {
     const monthCosts = eachDayArray.map(day => {
       const costsInDay = costs.filter(cost => getDate(cost.date) === day)
 
-      return { day, costs: costsInDay }
+      return { day: day + 1, costs: costsInDay }
     })
 
     const filteredMonthCosts = monthCosts.filter(monthCost => monthCost.costs.length > 0)

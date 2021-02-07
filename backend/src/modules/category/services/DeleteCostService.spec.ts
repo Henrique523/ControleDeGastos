@@ -32,6 +32,6 @@ describe('DeleteCostService', () => {
   })
 
   it('should not be able to delete a non-existing cost', async () => {
-    await expect(deleteCostService.execute({ id: 1 })).rejects.toBeInstanceOf(AppError)
+    await expect(deleteCostService.execute({ id: 'dhfakfge' })).rejects.toBeInstanceOf(AppError)
   })
 })

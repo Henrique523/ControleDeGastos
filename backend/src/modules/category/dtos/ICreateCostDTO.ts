@@ -1,7 +1,7 @@
 export default interface ICreateCostDTO {
-  id?: number
+  id?: string
   date: Date
   description: string
   value: number
-  category_id: number
+  category_id: string
 }

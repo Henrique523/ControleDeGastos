@@ -1,13 +1,14 @@
-import AppError from '@shared/errors/AppError'
 import 'reflect-metadata'
 import { inject, injectable } from 'tsyringe'
+
+import AppError from '@shared/errors/AppError'
 
 import Cost from '../infra/typeorm/entities/Cost'
 import ICategoryRepository from '../repositories/ICategoryRepository'
 import ICostRepository from '../repositories/ICostRepository'
 
 interface IRequest {
-  category_id: number
+  category_id: string
 }
 
 @injectable()

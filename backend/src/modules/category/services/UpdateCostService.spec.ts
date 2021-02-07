@@ -42,11 +42,11 @@ describe('UpdateCostService', () => {
   it('should not be able to update a non-existing cost', async () => {
     await expect(
       updateCostService.execute({
-        category_id: 1,
+        category_id: 'dfadsf',
         date: new Date(2021, 1, 15),
         value: 350,
         description: 'Gasto_1_Editado',
-        id: 1,
+        id: 'dfadfesf',
       })
     ).rejects.toBeInstanceOf(AppError)
   })
@@ -62,11 +62,11 @@ describe('UpdateCostService', () => {
 
     await expect(
       updateCostService.execute({
-        category_id: 2,
+        category_id: 'adfasdf',
         date: new Date(2021, 1, 15),
         value: 350,
         description: 'Gasto_1_Editado',
-        id: 1,
+        id: 'adsfas',
       })
     ).rejects.toBeInstanceOf(AppError)
   })

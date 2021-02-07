@@ -19,8 +19,8 @@ describe('DeleteCategoryService', () => {
   it('should be able to delete an existing category', async () => {
     const deleteCategory = jest.spyOn(fakeCategoryRepository, 'delete')
 
-    await createNewCategoryService.execute({ description: 'Category_1' })
-    await deleteCategoryService.execute({ id: 1 })
+    const category = await createNewCategoryService.execute({ description: 'Category_1' })
+    await deleteCategoryService.execute({ id: category.id })
 
     expect(deleteCategory).toHaveBeenCalled()
   })
@@ -28,13 +28,13 @@ describe('DeleteCategoryService', () => {
   it('should not be able to delete an non-existing category', async () => {
     await createNewCategoryService.execute({ description: 'Category_1' })
 
-    await expect(deleteCategoryService.execute({ id: 2 })).rejects.toBeInstanceOf(AppError)
+    await expect(deleteCategoryService.execute({ id: 'adfadsfas' })).rejects.toBeInstanceOf(AppError)
   })
 
   it('should not be able to delete a category that has already been deleted', async () => {
-    await createNewCategoryService.execute({ description: 'Category_1' })
-    await deleteCategoryService.execute({ id: 1 })
+    const category = await createNewCategoryService.execute({ description: 'Category_1' })
+    await deleteCategoryService.execute({ id: category.id })
 
-    await expect(deleteCategoryService.execute({ id: 1 })).rejects.toBeInstanceOf(AppError)
+    await expect(deleteCategoryService.execute({ id: category.id })).rejects.toBeInstanceOf(AppError)
   })
 })

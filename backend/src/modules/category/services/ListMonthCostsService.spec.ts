@@ -40,7 +40,7 @@ describe('ListMonthCostsService', () => {
     const monthCosts = await listMonthCostsService.execute({ month: 1, year: 2021 })
 
     expect(monthCosts).toHaveLength(2)
-    expect(monthCosts[0].day).toBe(1)
-    expect(monthCosts[1].day).toBe(2)
+    expect(monthCosts[0].day).toBe(2)
+    expect(monthCosts[1].day).toBe(3)
   })
 })

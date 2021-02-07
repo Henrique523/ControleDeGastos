@@ -65,6 +65,6 @@ describe('ListCostsByCategoryService', () => {
       value: 100,
     })
 
-    await expect(listCostsByCategoryService.execute({ category_id: 2 })).rejects.toBeInstanceOf(AppError)
+    await expect(listCostsByCategoryService.execute({ category_id: 'adfadf' })).rejects.toBeInstanceOf(AppError)
   })
 })

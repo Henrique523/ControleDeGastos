@@ -8,9 +8,10 @@ export class CreateCosts1612221048429 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'int',
+            type: 'uuid',
             isPrimary: true,
-            generationStrategy: 'increment',
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           {
             name: 'date',
@@ -29,7 +30,7 @@ export class CreateCosts1612221048429 implements MigrationInterface {
           },
           {
             name: 'category_id',
-            type: 'integer',
+            type: 'uuid',
           },
           {
             name: 'created_at',

@@ -6,7 +6,7 @@ import AppError from '@shared/errors/AppError'
 import ICostRepository from '../repositories/ICostRepository'
 
 interface IRequest {
-  id: number
+  id: string
 }
 
 @injectable()

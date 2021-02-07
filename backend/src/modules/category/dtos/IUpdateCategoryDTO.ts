@@ -1,4 +1,4 @@
 export default interface IUpdateCategoryDTO {
-  id: number
+  id: string
   description: string
 }

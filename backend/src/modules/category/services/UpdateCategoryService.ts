@@ -7,7 +7,7 @@ import Category from '../infra/typeorm/entities/Category'
 import ICategoryRepository from '../repositories/ICategoryRepository'
 
 interface IRequest {
-  id: number
+  id: string
   description: string
 }
 

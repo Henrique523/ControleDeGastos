@@ -11,7 +11,7 @@ interface IRequest {
   date: Date
   description: string
   value: number
-  category_id: number
+  category_id: string
 }
 
 @injectable()

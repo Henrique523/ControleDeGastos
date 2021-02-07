@@ -8,11 +8,11 @@ import ICategoryRepository from '../repositories/ICategoryRepository'
 import ICostRepository from '../repositories/ICostRepository'
 
 interface IRequest {
-  id: number
+  id: string
   description: string
   value: number
   date: Date
-  category_id: number
+  category_id: string
 }
 
 @injectable()

@@ -25,6 +25,8 @@ describe('UpdateCategoryService', () => {
   it('should not be able to update an unexisting category', async () => {
     await createNewCategoryService.execute({ description: 'Categoria 1' })
 
-    await expect(updateCategoryService.execute({ id: 2, description: 'Categoria 2' })).rejects.toBeInstanceOf(AppError)
+    await expect(updateCategoryService.execute({ id: 'aafadfds', description: 'Categoria 2' })).rejects.toBeInstanceOf(
+      AppError
+    )
   })
 })

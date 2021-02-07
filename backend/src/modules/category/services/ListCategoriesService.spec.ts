@@ -27,11 +27,11 @@ describe('ListCategoriesService', () => {
   })
 
   it('should be able to list only available categories', async () => {
-    await fakeCategoryRepository.create('Category_1')
+    const category1 = await fakeCategoryRepository.create('Category_1')
     await fakeCategoryRepository.create('Category_2')
     await fakeCategoryRepository.create('Category_3')
 
-    await deleteCategoryService.execute({ id: 1 })
+    await deleteCategoryService.execute({ id: category1.id })
 
     const availableCategories = await listCategoriesService.execute()
 

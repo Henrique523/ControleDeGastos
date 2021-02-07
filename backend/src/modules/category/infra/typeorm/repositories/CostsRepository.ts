@@ -15,6 +15,9 @@ export default class CostsRepository implements ICostRepository {
 
   public async create({ category_id, date, description, value }: ICreateCostDTO): Promise<Cost> {
     const cost = this.ormRepository.create({ category_id, date, description, value })
+
+    await this.save(cost)
+
     return cost
   }
 
@@ -24,13 +27,13 @@ export default class CostsRepository implements ICostRepository {
     return costs
   }
 
-  public async show(id: number): Promise<Cost | undefined> {
+  public async show(id: string): Promise<Cost | undefined> {
     const cost = this.ormRepository.findOne(id)
 
     return cost
   }
 
-  public async findCostsByCategory(category_id: number): Promise<Cost[]> {
+  public async findCostsByCategory(category_id: string): Promise<Cost[]> {
     const costs = await this.ormRepository.find({ where: { category_id } })
 
     return costs
@@ -48,7 +51,7 @@ export default class CostsRepository implements ICostRepository {
     return costs
   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     const cost = await this.ormRepository.findOne(id)
 
     if (cost) {

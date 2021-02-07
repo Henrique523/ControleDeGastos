@@ -32,7 +32,7 @@ describe('CreateNewCostService', () => {
   it('should not be able to create a new cost with a non-existing category', async () => {
     await expect(
       createNewCostService.execute({
-        category_id: 1,
+        category_id: 'afadfdasf',
         date: new Date(2021, 1, 25),
         description: 'Gasto_1',
         value: 250,

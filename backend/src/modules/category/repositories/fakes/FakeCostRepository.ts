@@ -1,4 +1,5 @@
 import { getMonth, getYear } from 'date-fns'
+import { uuid } from 'uuidv4'
 
 import Category from '@modules/category/infra/typeorm/entities/Category'
 import ICreateCostDTO from '@modules/category/dtos/ICreateCostDTO'
@@ -16,24 +17,34 @@ export default class FakeCostRepository implements ICostRepository {
     const created_at = new Date()
     const updated_at = new Date()
     const deleted_at = null
-    const id = this.costs.length + 1
+    const id = uuid()
 
-    this.costs.push({ id, description, category_id, category, date, value, created_at, updated_at, deleted_at })
+    const cost = this.costs.push({
+      id,
+      description,
+      category_id,
+      category,
+      date,
+      value,
+      created_at,
+      updated_at,
+      deleted_at,
+    })
 
-    return this.costs[id - 1]
+    return this.costs[cost - 1]
   }
 
   public async index(): Promise<Cost[]> {
     return this.costs.filter(cost => cost.deleted_at === null)
   }
 
-  public async show(id: number): Promise<Cost | undefined> {
+  public async show(id: string): Promise<Cost | undefined> {
     const cost = this.costs.find(cost => cost.id === id && cost.deleted_at === null)
 
     return cost
   }
 
-  public async findCostsByCategory(category_id: number): Promise<Cost[]> {
+  public async findCostsByCategory(category_id: string): Promise<Cost[]> {
     return this.costs.filter(cost => cost.category_id === category_id && cost.deleted_at === null)
   }
 
@@ -45,7 +56,7 @@ export default class FakeCostRepository implements ICostRepository {
     return costs
   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     const indexCost = this.costs.findIndex(cost => cost.id === id)
 
     this.costs[indexCost].deleted_at = new Date()

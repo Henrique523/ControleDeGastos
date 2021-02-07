@@ -14,6 +14,8 @@ export default class CategoryRepository implements ICategoryRepository {
   public async create(description: string): Promise<Category> {
     const category = this.ormRepository.create({ description })
 
+    await this.save(category)
+
     return category
   }
 
@@ -23,7 +25,7 @@ export default class CategoryRepository implements ICategoryRepository {
     return categories
   }
 
-  public async show(id: number): Promise<Category | undefined> {
+  public async show(id: string): Promise<Category | undefined> {
     const category = await this.ormRepository.findOne(id)
 
     return category
@@ -34,12 +36,14 @@ export default class CategoryRepository implements ICategoryRepository {
     return category
   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     const category = await this.ormRepository.findOne(id)
 
-    if (category) {
-      await this.ormRepository.softDelete(category)
+    if (!category) {
+      return
     }
+
+    await this.ormRepository.softDelete(id)
   }
 
   public async save(category: Category): Promise<Category> {

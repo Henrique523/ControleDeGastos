@@ -6,7 +6,7 @@ import AppError from '@shared/errors/AppError'
 import ICategoryRepository from '../repositories/ICategoryRepository'
 
 interface IRequest {
-  id: number
+  id: string
 }
 
 @injectable()
