@@ -8,6 +8,7 @@ import ListAllCostsService from '@modules/category/services/ListAllCostsService'
 import ListSpecificCostService from '@modules/category/services/ListSpecificCostService'
 import ListCostsByCategoryService from '@modules/category/services/ListCostsByCategoryService'
 import ListMonthCostsService from '@modules/category/services/ListMonthCostsService'
+import FindCostsByRangeDate from '@modules/category/services/FindCostsByRangeDate'
 import UpdateCostService from '@modules/category/services/UpdateCostService'
 import DeleteCostService from '@modules/category/services/DeleteCostService'
 
@@ -55,6 +56,16 @@ export default class CostController {
     const findAllInMonth = container.resolve(ListMonthCostsService)
 
     const costs = await findAllInMonth.execute({ month: Number(month), year: Number(year) })
+
+    return response.json(classToClass(costs))
+  }
+
+  public async findCostsByRangeDate(request: Request, response: Response): Promise<Response> {
+    const { initialDate, finalDate } = request.body
+
+    const findByRangeDate = container.resolve(FindCostsByRangeDate)
+
+    const costs = await findByRangeDate.execute({ initialDate, finalDate })
 
     return response.json(classToClass(costs))
   }

@@ -38,6 +38,17 @@ costRouter.get(
 )
 
 costRouter.post(
+  '/by-range',
+  celebrate({
+    [Segments.BODY]: {
+      initialDate: Joi.date().required(),
+      finalDate: Joi.date().required(),
+    },
+  }),
+  costController.findCostsByRangeDate
+)
+
+costRouter.post(
   '/',
   celebrate({
     [Segments.BODY]: {

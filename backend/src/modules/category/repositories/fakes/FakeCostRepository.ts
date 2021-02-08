@@ -7,6 +7,7 @@ import Cost from '@modules/category/infra/typeorm/entities/Cost'
 import IFindMonthCostsDTO from '@modules/category/dtos/IFindMonthCostsDTO'
 
 import ICostRepository from '../ICostRepository'
+import IFindCostsByDateDTO from '@modules/category/dtos/IFindCostsByDateDTO'
 
 export default class FakeCostRepository implements ICostRepository {
   private costs: Cost[] = []
@@ -51,6 +52,14 @@ export default class FakeCostRepository implements ICostRepository {
   public async findMonthCosts({ month, year }: IFindMonthCostsDTO): Promise<Cost[]> {
     const costs = this.costs.filter(
       cost => getMonth(cost.date) + 1 === month && getYear(cost.date) === year && cost.deleted_at === null
+    )
+
+    return costs
+  }
+
+  public async findCostsByDate({ initialDate, finalDate }: IFindCostsByDateDTO): Promise<Cost[]> {
+    const costs = this.costs.filter(
+      cost => cost.date >= initialDate && cost.date <= finalDate && cost.deleted_at === null
     )
 
     return costs
