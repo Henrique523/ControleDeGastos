@@ -53,7 +53,7 @@ describe('UpdateCostService', () => {
 
   it(`should not be able to update a cost with a non-existing category`, async () => {
     const category = await fakeCategoryRepository.create('Category_1')
-    await fakeCostRepository.create({
+    const cost = await fakeCostRepository.create({
       category_id: category.id,
       date: new Date(2021, 1, 15),
       value: 250,
@@ -66,7 +66,7 @@ describe('UpdateCostService', () => {
         date: new Date(2021, 1, 15),
         value: 350,
         description: 'Gasto_1_Editado',
-        id: 'adsfas',
+        id: cost.id,
       })
     ).rejects.toBeInstanceOf(AppError)
   })

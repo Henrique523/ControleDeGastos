@@ -1,10 +1,11 @@
-import { Repository, getRepository, Raw } from 'typeorm'
+import { Repository, getRepository, Raw, LessThanOrEqual, MoreThanOrEqual } from 'typeorm'
 
 import ICostRepository from '@modules/category/repositories/ICostRepository'
 import ICreateCostDTO from '@modules/category/dtos/ICreateCostDTO'
 
 import Cost from '../entities/Cost'
 import IFindMonthCostsDTO from '@modules/category/dtos/IFindMonthCostsDTO'
+import IFindCostsByDateDTO from '@modules/category/dtos/IFindCostsByDateDTO'
 
 export default class CostsRepository implements ICostRepository {
   private ormRepository: Repository<Cost>
@@ -51,11 +52,21 @@ export default class CostsRepository implements ICostRepository {
     return costs
   }
 
+  public async findCostsByDate({ initialDate, finalDate }: IFindCostsByDateDTO): Promise<Cost[]> {
+    const costs = await this.ormRepository.find({
+      where: {
+        date: MoreThanOrEqual(initialDate) && LessThanOrEqual(finalDate),
+      },
+    })
+
+    return costs
+  }
+
   public async delete(id: string): Promise<void> {
     const cost = await this.ormRepository.findOne(id)
 
     if (cost) {
-      this.ormRepository.softDelete(cost)
+      this.ormRepository.softDelete(cost.id)
     }
   }
 
