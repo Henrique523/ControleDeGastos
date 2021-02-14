@@ -1,5 +1,4 @@
 import styled, { keyframes } from 'styled-components'
-import { shade } from 'polished'
 
 const appearFromLeft = keyframes`
   from {
@@ -45,23 +44,6 @@ export const Content = styled.div`
       height: 48px;
 
       font-size: 16px;
-    }
-
-    button {
-      width: 200px;
-      height: 48px;
-      background: #023e8a;
-
-      border: 0;
-      border-radius: 8px;
-
-      color: #fbfbfb;
-      font-weight: bold;
-      transition: background-color 0.2s;
-
-      &:hover {
-        background: ${shade(0.2, '#023e8a')};
-      }
     }
   }
 `
@@ -113,7 +95,7 @@ export const DetailedSpends = styled.div`
   flex-direction: column;
   align-items: center;
 
-  animation: ${appearFromRight} 2s;
+  animation: ${appearFromRight} 1s;
 
   h3 {
     color: #fbfbfb;

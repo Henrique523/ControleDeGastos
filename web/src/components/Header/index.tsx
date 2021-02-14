@@ -1,11 +1,17 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { FiChevronLeft, FiBook, FiTag } from 'react-icons/fi'
 
 import { HeaderComponent, ButtonIcon } from './style'
 
+interface IconProps {
+  type: 'goBack' | 'cost' | 'category'
+  way: string
+}
+
 interface HeaderProps {
-  iconLeft: 'goBack' | 'cost' | 'category'
-  iconRight: 'goBack' | 'cost' | 'category'
+  iconLeft: IconProps
+  iconRight: IconProps
 }
 
 const icons = {
@@ -19,8 +25,12 @@ const Header: React.FC<HeaderProps> = ({ iconLeft, iconRight }) => {
     <HeaderComponent>
       <h3>Controle de Gastos</h3>
 
-      <ButtonIcon type="button">{icons[iconLeft]}</ButtonIcon>
-      <ButtonIcon type="button">{icons[iconRight]}</ButtonIcon>
+      <ButtonIcon>
+        <Link to={`/${iconLeft.way}`}>{icons[iconLeft.type]}</Link>
+      </ButtonIcon>
+      <ButtonIcon>
+        <Link to={`/${iconRight.way}`}>{icons[iconRight.type]}</Link>
+      </ButtonIcon>
     </HeaderComponent>
   )
 }

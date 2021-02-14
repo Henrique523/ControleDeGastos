@@ -16,15 +16,17 @@ export const HeaderComponent = styled.div`
 `
 
 export const ButtonIcon = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
   border: 0;
   padding: 8px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #03045e;
   transition: background-color 0.2s;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   & {
     margin-left: auto;
@@ -36,5 +38,9 @@ export const ButtonIcon = styled.button`
 
   &:hover {
     background: ${lighten(0.08, '#03045e')};
+  }
+
+  svg {
+    margin: 5px 2px 0 0;
   }
 `
