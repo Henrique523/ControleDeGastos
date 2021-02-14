@@ -16,7 +16,7 @@ export const Title = styled.h2`
   animation: ${appear} 1s;
 `
 
-export const Form = styled.form`
+export const FormLine = styled.div`
   margin: 32px 24px;
 
   animation: ${appear} 1s;

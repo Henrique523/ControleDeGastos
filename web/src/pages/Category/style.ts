@@ -16,7 +16,7 @@ export const Title = styled.h2`
   animation: ${appear} 1s;
 `
 
-export const Form = styled.form`
+export const FormLine = styled.div`
   margin: 32px 24px;
 
   display: flex;
@@ -24,14 +24,4 @@ export const Form = styled.form`
   justify-content: space-between;
 
   animation: ${appear} 1s;
-
-  input {
-    width: 300px;
-    height: 48px;
-
-    padding-left: 8px;
-
-    border: 1px solid #000;
-    border-radius: 8px;
-  }
 `

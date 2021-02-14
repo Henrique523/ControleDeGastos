@@ -1,4 +1,6 @@
-import React, { useState, useCallback } from 'react'
+import React, { useRef, useCallback, useState, useMemo } from 'react'
+import { Form } from '@unform/web'
+import { FormHandles } from '@unform/core'
 
 import Header from '../../components/Header'
 import ResumedCost from '../../components/ResumedCost'
@@ -8,22 +10,58 @@ import Button from '../../components/Button'
 
 import { Content, CardFutureSpends, DashboardCards, ResumedSpends, DetailedSpends } from './styles'
 
-const Dashboard: React.FC = () => {
-  const [inputType, setInputType] = useState('text')
+interface SeacrhByRangeFormData {
+  initialDate: string
+}
 
-  const changeTypeInput = useCallback(() => {
-    inputType === 'text' ? setInputType('date') : setInputType('text')
-  }, [inputType])
+const Dashboard: React.FC = () => {
+  const formRef = useRef<FormHandles>(null)
+
+  const [initialDateValue, setInitialDateValue] = useState('')
+  const [isFocused, setIsFocused] = useState(false)
+  const [isFilled, setIsFilled] = useState(false)
+
+  const initialDateInputType = useMemo(() => {
+    if ((!isFocused && isFilled) || isFocused) {
+      return 'date'
+    }
+
+    return 'text'
+  }, [isFilled, isFocused])
+
+  const handleSearchByRange = useCallback((data: SeacrhByRangeFormData) => {
+    console.log(data, 'DATA')
+  }, [])
+
+  const updateInitialDateValue = useCallback((data: React.ChangeEvent<HTMLInputElement>) => {
+    setInitialDateValue(data.target.value)
+  }, [])
+
+  const handleInputFocus = useCallback(() => {
+    setIsFocused(true)
+  }, [])
+
+  const handleInputBlur = useCallback(() => {
+    setIsFocused(false)
+    setIsFilled(!!initialDateValue)
+  }, [initialDateValue])
 
   return (
     <>
       <Header iconLeft={{ type: 'cost', way: 'cost' }} iconRight={{ type: 'category', way: 'category' }} />
 
       <Content>
-        <form>
-          <Input type={inputType} placeholder="Data Inicial" onFocus={changeTypeInput} />
+        <Form ref={formRef} onSubmit={handleSearchByRange}>
+          <Input
+            name="initialDate"
+            placeholder="Data Inicial"
+            onChange={updateInitialDateValue}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            type={initialDateInputType}
+          />
           <Button type="submit">Filtrar</Button>
-        </form>
+        </Form>
 
         <DashboardCards>
           <ResumedSpends>
