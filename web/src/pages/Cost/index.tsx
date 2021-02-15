@@ -5,8 +5,22 @@ import { FormHandles } from '@unform/core'
 import Header from '../../components/Header'
 import Input from '../../components/Input'
 import Button from '../../components/Button'
+import Select from '../../components/Select'
 
 import { Title, FormLine } from './style'
+
+interface CostFormData {
+  category_id: string
+  value: number
+  description: string
+  date: Date
+}
+
+const options = [
+  { value: 'chocolate', label: 'Compras' },
+  { value: 'strawberry', label: 'Carro' },
+  { value: 'vanilla', label: 'Lazer' },
+]
 
 const Cost: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
@@ -36,13 +50,17 @@ const Cost: React.FC = () => {
     setIsFilled(!!date)
   }, [date])
 
+  const handleForm = useCallback((data: CostFormData) => {
+    console.log(data)
+  }, [])
+
   return (
     <>
       <Header iconLeft={{ type: 'category', way: 'category' }} iconRight={{ type: 'goBack', way: '' }} />
 
       <Title>Cadastro de Gasto</Title>
 
-      <Form ref={formRef}>
+      <Form ref={formRef} onSubmit={handleForm}>
         <FormLine>
           <div className="cost-form">
             <Input name="description" type="text" placeholder="Descrição" />
@@ -57,7 +75,7 @@ const Cost: React.FC = () => {
               type={dateInputType}
             />
 
-            <Input name="category" type="text" placeholder="Categoria" />
+            <Select name="category_id" options={options} />
           </div>
 
           <div className="register-form-button">
