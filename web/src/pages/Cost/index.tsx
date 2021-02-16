@@ -1,6 +1,10 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react'
+import React, { useRef, useState, useCallback, useMemo, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Form } from '@unform/web'
 import { FormHandles } from '@unform/core'
+import { parseISO } from 'date-fns'
+
+import axiosClient from '../../utils/axios'
 
 import Header from '../../components/Header'
 import Input from '../../components/Input'
@@ -13,21 +17,26 @@ interface CostFormData {
   category_id: string
   value: number
   description: string
-  date: Date
+  date: string
 }
 
-const options = [
-  { value: 'chocolate', label: 'Compras' },
-  { value: 'strawberry', label: 'Carro' },
-  { value: 'vanilla', label: 'Lazer' },
-]
+interface CategoryOptions {
+  value: string
+  label: string
+}
 
+interface CategoryResponseData {
+  description: string
+  id: string
+}
 const Cost: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
+  const history = useHistory()
 
   const [date, setDate] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [isFilled, setIsFilled] = useState(false)
+  const [categoryOptions, setCategoryOptions] = useState<CategoryOptions[]>([])
 
   const dateInputType = useMemo(() => {
     if ((!isFocused && isFilled) || isFocused) {
@@ -36,6 +45,28 @@ const Cost: React.FC = () => {
 
     return 'text'
   }, [isFilled, isFocused])
+
+  const getCategories = useCallback(async () => {
+    try {
+      const response = await axiosClient.get<CategoryResponseData[]>('/categories')
+      return response.data
+    } catch (err) {
+      window.alert(err)
+    }
+  }, [])
+
+  useEffect(() => {
+    getCategories().then(categories => {
+      if (categories) {
+        const categoriesFromSelect: CategoryOptions[] = categories.map(category => ({
+          label: category.description,
+          value: category.id,
+        }))
+
+        setCategoryOptions(categoriesFromSelect)
+      }
+    })
+  }, [getCategories])
 
   const updateDateValue = useCallback((data: React.ChangeEvent<HTMLInputElement>) => {
     setDate(data.target.value)
@@ -50,9 +81,19 @@ const Cost: React.FC = () => {
     setIsFilled(!!date)
   }, [date])
 
-  const handleForm = useCallback((data: CostFormData) => {
-    console.log(data)
-  }, [])
+  const createNewCost = useCallback(
+    async ({ category_id, date, description, value }: CostFormData) => {
+      const dateFormatted = parseISO(date)
+
+      try {
+        await axiosClient.post('/costs', { category_id, description, value, date: dateFormatted })
+        history.push('/')
+      } catch (err) {
+        window.alert(err)
+      }
+    },
+    [history]
+  )
 
   return (
     <>
@@ -60,11 +101,11 @@ const Cost: React.FC = () => {
 
       <Title>Cadastro de Gasto</Title>
 
-      <Form ref={formRef} onSubmit={handleForm}>
+      <Form ref={formRef} onSubmit={createNewCost}>
         <FormLine>
           <div className="cost-form">
             <Input name="description" type="text" placeholder="Descrição" />
-            <Input name="value" type="number" placeholder="Valor" />
+            <Input name="value" type="number" step=".01" placeholder="Valor" />
 
             <Input
               name="date"
@@ -75,7 +116,7 @@ const Cost: React.FC = () => {
               type={dateInputType}
             />
 
-            <Select name="category_id" options={options} />
+            <Select name="category_id" options={categoryOptions} placeholder="Categoria" />
           </div>
 
           <div className="register-form-button">

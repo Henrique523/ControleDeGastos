@@ -10,6 +10,10 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@unform/core": "^2.1.5",
+    "@unform/web": "^2.1.5",
+    "axios": "^0.21.1",
+    "date-fns": "^2.17.0",
     "polished": "^4.1.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -28,12 +32,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -47,6 +45,8 @@
     ]
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/date-fns": "^2.6.0",
     "@types/react-router-dom": "^5.1.7",
     "@types/react-select": "^4.0.13",
     "@types/styled-components": "^5.1.7",

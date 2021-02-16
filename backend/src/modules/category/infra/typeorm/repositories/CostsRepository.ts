@@ -41,7 +41,7 @@ export default class CostsRepository implements ICostRepository {
   }
 
   public async findMonthCosts({ year, month }: IFindMonthCostsDTO): Promise<Cost[]> {
-    const parsedMonth = String(month).padStart(2, '0')
+    const parsedMonth = String(month + 1).padStart(2, '0')
 
     const costs = await this.ormRepository.find({
       where: {

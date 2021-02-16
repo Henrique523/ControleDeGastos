@@ -1,5 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm'
 import { Exclude } from 'class-transformer'
+import Cost from './Cost'
 
 @Entity('categories')
 export default class Category {
@@ -8,6 +18,10 @@ export default class Category {
 
   @Column()
   description: string
+
+  @OneToMany(() => Cost, cost => cost.category_id)
+  @JoinColumn({ name: 'category_id' })
+  category: Category
 
   @CreateDateColumn()
   @Exclude()
