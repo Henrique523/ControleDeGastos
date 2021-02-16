@@ -2,8 +2,10 @@ import React, { useRef, useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Form } from '@unform/web'
 import { FormHandles } from '@unform/core'
+import * as Yup from 'yup'
 
-import axiosClient from '../../utils/axios'
+import axiosClient from '../../services/axios'
+import getValidationErrors from '../../utils/getValidationErrors'
 
 import Header from '../../components/Header'
 import Input from '../../components/Input'
@@ -20,12 +22,23 @@ const Category: React.FC = () => {
   const history = useHistory()
 
   const createNewCategory = useCallback(
-    async ({ description }: CategoryFormData) => {
+    async (data: CategoryFormData) => {
       try {
-        await axiosClient.post('/categories', { description })
+        formRef.current?.setErrors({})
+
+        const schema = Yup.object().shape({
+          description: Yup.string().required('Descrição obrigatória'),
+        })
+
+        await schema.validate(data, { abortEarly: false })
+
+        await axiosClient.post('/categories', { description: data.description })
         history.push('/')
       } catch (err) {
-        window.alert(err)
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err)
+          window.alert(errors.description)
+        }
       }
     },
     [history]

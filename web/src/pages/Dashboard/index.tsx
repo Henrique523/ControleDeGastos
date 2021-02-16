@@ -3,8 +3,10 @@ import { Form } from '@unform/web'
 import { FormHandles } from '@unform/core'
 import { getMonth, getYear, format, parseISO } from 'date-fns'
 import ptbrLocale from 'date-fns/locale/pt-BR'
+import * as Yup from 'yup'
 
-import axiosClient from '../../utils/axios'
+import axiosClient from '../../services/axios'
+import getValidationErrors from '../../utils/getValidationErrors'
 
 import Header from '../../components/Header'
 import ResumedCost from '../../components/ResumedCost'
@@ -167,59 +169,74 @@ const Dashboard: React.FC = () => {
   }, [initialDateValue])
 
   const handleSearchByRange = useCallback(
-    async ({ initialDate }: SeacrhByRangeFormData) => {
-      const finalDate = new Date(Date.now())
-      finalDate.setHours(23)
-      finalDate.setMinutes(59)
-      finalDate.setSeconds(59)
+    async (data: SeacrhByRangeFormData) => {
+      try {
+        formRef.current?.setErrors({})
 
-      const response = await axiosClient.post<MostRecentCosts[]>('/costs/by-range', {
-        initialDate: parseISO(initialDate),
-        finalDate,
-      })
-      const mostRecentCosts = response.data.map(cost => {
-        const categoryIndex = categories.findIndex(category => category.id === cost.category_id)
-        const date_string = `${cost.date}`.split('T')[0].split('-').reverse().join('/')
-        return {
-          ...cost,
-          category: categories[categoryIndex].description,
-          date_string,
-        }
-      })
+        const schema = Yup.object().shape({
+          initialDate: Yup.string().required('Data inicial obrigatória'),
+        })
 
-      setMostRecentCosts(mostRecentCosts)
+        await schema.validate(data, { abortEarly: false })
 
-      const recentCostsOrderedByCategory: Array<MostRecentCosts[]> = []
-      const totalByCategoryFiltered: CategoryResumedData[] = []
+        const finalDate = new Date(Date.now())
+        finalDate.setHours(23)
+        finalDate.setMinutes(59)
+        finalDate.setSeconds(59)
 
-      categories.forEach((category, index) => {
-        recentCostsOrderedByCategory[index] = mostRecentCosts.filter(
-          recentCost => recentCost.category_id === category.id
-        )
-      })
-
-      recentCostsOrderedByCategory.forEach(costsByCategory => {
-        if (costsByCategory.length > 0) {
-          const indexTotalByCategory = totalByCategory.findIndex(
-            total => total.category === costsByCategory[0].description
-          )
-
-          if (indexTotalByCategory === -1) {
-            let totalValue = 0
-
-            costsByCategory.forEach(cost => {
-              totalValue += Number(cost.value)
-            })
-
-            totalByCategoryFiltered.push({
-              category: costsByCategory[0].category,
-              value: Number(totalValue.toFixed(2)),
-            })
+        const response = await axiosClient.post<MostRecentCosts[]>('/costs/by-range', {
+          initialDate: parseISO(data.initialDate),
+          finalDate,
+        })
+        const mostRecentCosts = response.data.map(cost => {
+          const categoryIndex = categories.findIndex(category => category.id === cost.category_id)
+          const date_string = `${cost.date}`.split('T')[0].split('-').reverse().join('/')
+          return {
+            ...cost,
+            category: categories[categoryIndex].description,
+            date_string,
           }
-        }
-      })
+        })
 
-      setTotalByCategory(totalByCategoryFiltered)
+        setMostRecentCosts(mostRecentCosts)
+
+        const recentCostsOrderedByCategory: Array<MostRecentCosts[]> = []
+        const totalByCategoryFiltered: CategoryResumedData[] = []
+
+        categories.forEach((category, index) => {
+          recentCostsOrderedByCategory[index] = mostRecentCosts.filter(
+            recentCost => recentCost.category_id === category.id
+          )
+        })
+
+        recentCostsOrderedByCategory.forEach(costsByCategory => {
+          if (costsByCategory.length > 0) {
+            const indexTotalByCategory = totalByCategory.findIndex(
+              total => total.category === costsByCategory[0].description
+            )
+
+            if (indexTotalByCategory === -1) {
+              let totalValue = 0
+
+              costsByCategory.forEach(cost => {
+                totalValue += Number(cost.value)
+              })
+
+              totalByCategoryFiltered.push({
+                category: costsByCategory[0].category,
+                value: Number(totalValue.toFixed(2)),
+              })
+            }
+          }
+        })
+
+        setTotalByCategory(totalByCategoryFiltered)
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err)
+          window.alert(errors.initialDate)
+        }
+      }
     },
     [categories, totalByCategory]
   )

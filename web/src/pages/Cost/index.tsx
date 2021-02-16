@@ -3,8 +3,10 @@ import { useHistory } from 'react-router-dom'
 import { Form } from '@unform/web'
 import { FormHandles } from '@unform/core'
 import { parseISO } from 'date-fns'
+import * as Yup from 'yup'
 
-import axiosClient from '../../utils/axios'
+import axiosClient from '../../services/axios'
+import getValidationErrors from '../../utils/getValidationErrors'
 
 import Header from '../../components/Header'
 import Input from '../../components/Input'
@@ -82,17 +84,38 @@ const Cost: React.FC = () => {
   }, [date])
 
   const createNewCost = useCallback(
-    async ({ category_id, date, description, value }: CostFormData) => {
-      const dateFormatted = parseISO(date)
-
+    async (data: CostFormData) => {
       try {
-        await axiosClient.post('/costs', { category_id, description, value, date: dateFormatted })
+        formRef.current?.setErrors({})
+
+        const schema = Yup.object().shape({
+          description: Yup.string().required('Descrição obrigatória'),
+          category_id: Yup.string().required('Categoria Obrigatória'),
+          value: Yup.string().required('Valor obrigatório'),
+          date: Yup.string().required('Data obrigatória'),
+        })
+
+        await schema.validate(data, { abortEarly: false })
+
+        const dateFormatted = parseISO(date)
+        await axiosClient.post('/costs', {
+          category_id: data.category_id,
+          description: data.description,
+          value: data.value,
+          date: dateFormatted,
+        })
         history.push('/')
       } catch (err) {
-        window.alert(err)
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err)
+          const valuesErrors = Object.values(errors)
+
+          const messageErros = valuesErrors.join('\n')
+          window.alert(`${messageErros}`)
+        }
       }
     },
-    [history]
+    [date, history]
   )
 
   return (
